@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.cache/
+# personal: your gear, build data, generated filters and your game exports
+equipped.json
+build.json
+examples/
+testdata/
+filter_version.txt
+build_*.json
+# synergy explorer (separate project; local only)
+synergy.py
+skills.py
+dpscalc.py
+reports/
