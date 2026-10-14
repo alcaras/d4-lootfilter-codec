@@ -8,11 +8,11 @@ drops never have tempers, and you'd temper the new piece the same way).
 Socketed gems are ignored, as the game's filter ignores them too. For each slot
 the script counts how many wanted stats your equipped piece dropped with (N)
 and only lights up items with at least its Item Power:
-  Cyan      = N wanted stats: same as equipped. Your own piece shows cyan,
-              or magenta if its temper is a wanted stat (the game's filter
-              does count tempered lines)
-  Magenta   = N+1 or more wanted stats: a real upgrade; also target uniques
-              and endgame jackpots (GA CDR, All Skills)
+  Magenta   = likely upgrade: N+1 or more wanted stats (or, once the
+              equipped piece has every wanted stat, any piece with all of
+              them); also target uniques and endgame jackpots (GA CDR,
+              All Skills). Sidegrades (same count) are deliberately not
+              shown, to keep time in town short.
   Dim teal  = melee weapon with at least equipped Item Power, any stats
               (Dance of Knives uses the melee weapons; the bow is only
               there for its aspect)
@@ -51,7 +51,7 @@ old = d4filter.decode(open(os.path.join(HERE, "testdata", "export_original.txt")
 latest = d4filter.decode(open(os.path.join(HERE, "testdata", "export_v8_after_import.txt")).read())
 keep = {r["name"].strip(): r for r in old["rules"]}
 
-UP, SAME, IP_ONLY, CODEX, SELL = "#FF00FF", "#00FFFF", "#4A9AA5", "#FF3030", "#FFA0D0"
+UP, IP_ONLY, CODEX, SELL = "#FF00FF", "#4A9AA5", "#FF3030", "#FFA0D0"
 IP_MAX = 900    # the game clamps the Item Power range maximum to 900
 
 # Wanted stats come from build.json (python maxroll_import.py <guide URL>).
@@ -129,11 +129,11 @@ def slot_rules(label, keys, types, wanted, must):
             conds.append({"type": "optional_affixes", "ids": wanted, "mode": n})
         return conds
 
-    up = have + 1
-    out = []
-    if up <= len(wanted):   # a better piece is still possible
-        out.append(rule(f"{label} up", UP, *base, *affixes(up)))
-    out.append(rule(f"{label} same", SAME, *base, *affixes(have)))
+    # Only likely upgrades: more wanted stats than equipped. Once the equipped
+    # piece has every wanted stat, a piece with all of them at higher Item
+    # Power is the upgrade instead.
+    n = min(have + 1, len(wanted))
+    out = [rule(f"{label} up", UP, *base, *affixes(n))]
     summary.append((label, floor, have + (must is not None), len(wanted) + (must is not None)))
     return out
 
@@ -143,8 +143,7 @@ rules = [rule("DoK Uniques", UP, {"type": "unique", "ids": [
     DEATHS_PAVANE, ETNAS_LOST_DAGGER, ETNAS_LOST_DAGGER_CHARM,
     PENITENT_GREAVES, PENITENT_GREAVES_CHARM]})]
 tiers = [slot_rules(*s) for s in SLOTS]
-rules += [r for t in tiers for r in t if r["color"] == UP]
-rules += [r for t in tiers for r in t if r["color"] == SAME]
+rules += [r for t in tiers for r in t]
 rules.append(rule("Melee IP only", IP_ONLY, {"type": "item_type", "ids": MELEE},
                   {"type": "item_power",
                    "min": min(equipped[k]["ip"] for k in ("mainhand", "offhand")),
@@ -158,7 +157,7 @@ for c in ga_cdr["conditions"]:
         c["mode"] = 1
 rules += [dict(keep["Legendary Seal (Sell)"], color=SELL),
           dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
-assert len({r["color"] for r in rules}) == 5, "one meaning per color"
+assert {r["color"] for r in rules} <= {UP, IP_ONLY, CODEX, SELL}, "one meaning per color"
 
 flt = {"name": f"DoK Upgrades v{VERSION}", "rules": rules,
        "f3": latest["f3"], "f4": latest["f4"]}

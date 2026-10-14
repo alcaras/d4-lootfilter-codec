@@ -7,7 +7,7 @@ This repo builds import strings for Diablo IV's in-game Loot Filter. The main us
 - **Don't trust an affix ID until the game has accepted it.** The filter keeps one ID per stat and silently drops others on import. A new ID is confirmed only after an in-game import, export, and decode shows it survived. Record confirmed IDs in `ids.py` (`CONFIRMED_AFFIXES`).
 - **Give import strings via the clipboard, never retyped.** After a build, run `Get-Content -Raw examples/dok_tiers.txt | % { $_.Trim() } | Set-Clipboard` and check the length. A retyped 2,000-character string once got garbled and was rejected.
 - **Game limits:** at most 25 rules, rule names up to 24 characters (longer names are dropped), and the Item Power maximum is clamped to 900.
-- **Colors:** one meaning per color, never a Diablo rarity color (white, blue, yellow, orange, tan, purple, green). Magenta = upgrade with more wanted stats than equipped (also target uniques and jackpots). Cyan = same count as equipped. Dim teal = melee weapon at or above equipped Item Power. Red = Codex upgrade only. Pale pink = legendary seal to sell. The build script asserts this.
+- **Colors:** one meaning per color, never a Diablo rarity color (white, blue, yellow, orange, tan, purple, green). Magenta = likely upgrade: more wanted stats than equipped (or all of them once the equipped piece has all; also target uniques and jackpots). Sidegrades are not shown (the player wants minimal time in town). Dim teal = melee weapon at or above equipped Item Power. Red = Codex upgrade only. Pale pink = legendary seal to sell. The build script asserts this.
 
 ## Gear update (the usual loop)
 1. The player hovers each changed **equipped** item and presses the in-game screenshot key. Files land in `Documents\Diablo IV\Screenshots`.
@@ -25,7 +25,7 @@ This repo builds import strings for Diablo IV's in-game Loot Filter. The main us
 
 The player's gear and filter are private: `equipped.json`, `build.json`, `filter_version.txt`, `examples/` and `testdata/` are git-ignored and stay local. Gear updates are never committed. Only commit and push changes to code or docs (the public repo is github.com/alcaras/d4-lootfilter-codec).
 
-The player's preferences: boots and amulet must have Movement Speed; weapon stat tiers (magenta/cyan) must be Rare or better, but the dim-teal melee Item Power tier is any rarity (Magic weapons can still be a DPS upgrade); existing tempers are never replaced while leveling (temper better drops instead). Weapons are swapped as soon as a better one drops and are not tempered while leveling, so they get no temper reminders.
+The player's preferences: boots and amulet must have Movement Speed; weapon stat tiers (magenta) must be Rare or better, but the dim-teal melee Item Power tier is any rarity (Magic weapons can still be a DPS upgrade); existing tempers are never replaced while leveling (temper better drops instead). Weapons are swapped as soon as a better one drops and are not tempered while leveling, so they get no temper reminders.
 
 ## New season, patch, or build
 1. `python maxroll_import.py <maxroll guide URL>` regenerates `build.json` (wanted stats and tempers per slot). Any IDs it flags as unconfirmed need one in-game import/export check.
