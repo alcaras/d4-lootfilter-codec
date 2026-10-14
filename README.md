@@ -4,8 +4,8 @@ Decode, edit and build **Diablo IV in-game Loot Filter** import strings from Pyt
 
 - `d4filter.py`: codec for the share strings. It is a hand-rolled protobuf wire codec, and it round-trips real game exports **byte-for-byte**.
 - `ids.py`: affix, item type and unique IDs, **checked against the live game** (see below).
-- `maxroll_import.py`: pulls each slot's wanted stats and tempers from a Maxroll build guide into `build.json`, mapped onto filter-accepted IDs.
-- `build_dok_tiers.py`: a worked example that builds a Dance of Knives Rogue leveling filter that only highlights upgrades over your equipped gear.
+- `maxroll_import.py`: pulls each slot's wanted stats and tempers from a Maxroll build guide into a character's `build.json`, mapped onto filter-accepted IDs.
+- `build_filter.py`: builds a per-character leveling filter that only highlights upgrades over that character's equipped gear (worked example: a Dance of Knives Rogue).
 
 Checked on game build **3.2.2.73764** (Season 15). IDs can change between patches; see [Verifying IDs](#verifying-ids-against-the-game).
 
@@ -16,7 +16,7 @@ python d4filter.py decode "<import string>"      # -> JSON
 python d4filter.py table  "<import string>"      # -> readable rule table
 python d4filter.py encode my_filter.json         # -> import string
 python d4filter.py test                          # round-trip every export in testdata/ (your own; not in the repo)
-python build_dok_tiers.py                        # -> examples/dok_tiers.txt
+python build_filter.py <char>                    # -> chars/<char>/filter.txt
 ```
 
 Requires only Python 3.8+ and has no dependencies.
@@ -110,14 +110,14 @@ Maxroll planners also include ready-made in-game filters ("Maxroll Light / Mediu
 
 ## Example: Dance of Knives leveling upgrade filter
 
-The script writes your filter to `examples/dok_tiers.txt`. It reads your gear from `equipped.json` (Item Power and stat names as shown on the tooltip), for example:
+Each character has a folder `chars/<char>/` with `settings.json` (class, filter name, guide, target uniques, preferences), `build.json` (from `maxroll_import.py --char <char>`) and `equipped.json`. The script writes the filter to `chars/<char>/filter.txt`. `equipped.json` holds the gear (Item Power and stat names as shown on the tooltip), for example:
 
 ```json
 {"helm": {"item": "Some Helm", "ip": 412, "rarity": "Legendary", "tempers_left": 1,
           "stats": ["Dexterity", "Maximum Life"], "tempers": ["Maximum Life"]}}
 ```
 
-Slots: `helm, chest, gloves, pants, boots, amulet, ring1, ring2, ranged, mainhand, offhand`. `equipped.json`, `build.json`, `examples/` and `testdata/` are personal and git-ignored. Wanted stats per slot are lines 1–4 of [Maxroll's Season 15 DoK leveling guide](https://maxroll.gg/d4/build-guides/dance-of-knives-rogue-leveling-guide) stat priority; the hammer line is the temper, which you add yourself, so it isn't counted. For each slot the script counts the wanted stats on your equipped piece (N) and only lights up items with at least its Item Power:
+Slots: `helm, chest, gloves, pants, boots, amulet, ring1, ring2, ranged, mainhand, offhand`. `chars/` and `testdata/` are personal and git-ignored. Weapon slot groups are defined per class in `build_filter.py` (`CLASS_GROUPS`); only the Rogue's exist so far. Wanted stats per slot are lines 1–4 of [Maxroll's Season 15 DoK leveling guide](https://maxroll.gg/d4/build-guides/dance-of-knives-rogue-leveling-guide) stat priority; the hammer line is the temper, which you add yourself, so it isn't counted. For each slot the script counts the wanted stats on your equipped piece (N) and only lights up items with at least its Item Power:
 
 | Color | Meaning |
 |---|---|
@@ -133,10 +133,10 @@ Boots and amulets must also have Movement Speed. Rings and melee weapons compare
 The colors avoid Diablo IV's own rarity colors (white, blue, yellow, orange, tan, purple, green), so a recolor can't be mistaken for an item's rarity. While leveling, update a slot and rebuild:
 
 ```bash
-python build_dok_tiers.py helm=270 boots=310
+python build_filter.py <char> helm=270 boots=310
 ```
 
-The filter name carries a version number (`DoK Upgrades vN`) so you can tell in-game which one is loaded. The full rule table is written to `examples/dok_tiers.md`.
+The filter name carries a version number (`DoK Upgrades vN`) so you can tell in-game which one is loaded. The full rule table is written to `chars/<char>/filter.md`.
 
 ### Changelog
 
@@ -145,6 +145,7 @@ The filter name carries a version number (`DoK Upgrades vN`) so you can tell in-
 - **v15**: the build prints temper reminders for untempered Rare-or-better equipped pieces (existing tempers are never replaced while leveling) (`equipped.json` records rarity and temper attempts left).
 - **v12**: `equipped.json` separates dropped stats from tempers (only dropped stats set the bar; the filter counts tempered lines but not gems); wanted stats now come from `build.json`, generated by `maxroll_import.py` from the guide's planner; the output is byte-identical to the hand-built v12.
 - **v11**: the Item-Power-only weapon tier covers melee weapons only, since Dance of Knives doesn't use the ranged weapon's damage. 24/25 rules.
+- **Multiple characters**: per-character folders under `chars/` and `build_filter.py <char>` (was `build_dok_tiers.py`); the Rogue's filter is unchanged.
 - **v40**: cyan sidegrades are back, but only for slots whose equipped piece already has 3+ wanted stats.
 - **v33**: only likely upgrades are colored. The cyan "same number of wanted stats" (sidegrade) tier is gone, to cut time spent comparing in town.
 - **v10**: colors are relative to your equipped piece (cyan = same number of wanted stats, magenta = more); `equipped.json` holds your gear's stats by name; wanted lists are exactly Maxroll's lines 1–4 (temper stats like Poison Damage, and + to Dance of Knives, removed); ranged and melee weapons split. 25/25 rules.

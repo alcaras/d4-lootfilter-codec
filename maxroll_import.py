@@ -1,6 +1,6 @@
 """Import wanted stats per slot from a Maxroll build guide or planner.
 
-  python maxroll_import.py <maxroll guide or planner URL> [--profile NAME] [--out build.json]
+  python maxroll_import.py <maxroll guide or planner URL> [--profile NAME] [--char NAME | --out PATH]
 
 Fetches the planner behind the guide (planners.maxroll.gg JSON, the same
 public endpoint d4lf's importer uses) and Maxroll's game data, picks a planner
@@ -85,8 +85,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("url")
     ap.add_argument("--profile", help="planner profile name (default: first containing 'Leveling')")
-    ap.add_argument("--out", default=os.path.join(HERE, "build.json"))
+    ap.add_argument("--char", help="write chars/<char>/build.json")
+    ap.add_argument("--out", help="output path (default: chars/<char>/build.json, else build.json)")
     args = ap.parse_args()
+    if not args.out:
+        args.out = (os.path.join(HERE, "chars", args.char, "build.json") if args.char
+                    else os.path.join(HERE, "build.json"))
 
     pid = planner_id(args.url)
     planner = json.loads(json.loads(fetch(PLANNER_API + pid, f"planner_{pid}.json"))["data"])

@@ -1,4 +1,12 @@
-"""Dance of Knives leveling filter that highlights upgrades over your gear.
+"""Leveling loot filter that highlights upgrades over a character's gear.
+
+  python build_filter.py <char> [slot=ip ...]      e.g. python build_filter.py alcara helm=270
+
+Everything per character lives in chars/<char>/ (git-ignored, personal):
+  settings.json   name, class, filter name, guide, uniques, preferences
+  build.json      wanted stats per slot (python maxroll_import.py <guide> --char <char>)
+  equipped.json   the gear you wear
+  filter_version.txt, filter.{txt,json,md}   the generated filter
 
 Wanted stats per slot come from build.json, which maxroll_import.py pulls from
 the Maxroll guide's planner (the guide's stat priority lines 1-4; tempers are
@@ -28,16 +36,11 @@ Affixes", with the counts adjusted accordingly.
 Colors avoid D4's native rarity hues (white, blue, yellow, orange, tan,
 purple, green) so a recolor can't be mistaken for an item's rarity.
 The version number goes into the filter name so you can tell in-game which
-one is loaded; bump VERSION and add a CHANGELOG line for every change.
+one is loaded; bump filter_version.txt for every new filter.
 
-Update equipped.json (Item Power and stat names as shown on the tooltip) when
-you swap gear, or just the Item Power from the command line, then rebuild:
-  python build_dok_tiers.py
-  python build_dok_tiers.py helm=270 boots=310
-Rings and melee weapons use the weaker of the pair (lower Item Power, fewer
-wanted stats).
-
-Writes examples/dok_tiers.{json,txt,md}.
+Rings and paired weapons use the weaker of the pair (lower Item Power, fewer
+wanted stats). Weapon slot groups are per class (CLASS_GROUPS); a new class
+needs its groups added, with item type IDs confirmed in-game.
 """
 import json
 import os
@@ -47,8 +50,16 @@ import d4filter
 from ids import *
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# Filter version: kept in a local, git-ignored file. Bump it for every new filter.
-VERSION_FILE = os.path.join(HERE, "filter_version.txt")
+if len(sys.argv) < 2 or "=" in sys.argv[1]:
+    chars_dir = os.path.join(HERE, "chars")
+    chars = sorted(os.listdir(chars_dir)) if os.path.isdir(chars_dir) else []
+    sys.exit("usage: python build_filter.py <char> [slot=ip ...]; characters: "
+             + (", ".join(chars) or "none"))
+CHAR = sys.argv[1]
+CHAR_DIR = os.path.join(HERE, "chars", CHAR)
+settings = json.load(open(os.path.join(CHAR_DIR, "settings.json"), encoding="utf-8"))
+# Filter version: kept in the character's folder. Bump it for every new filter.
+VERSION_FILE = os.path.join(CHAR_DIR, "filter_version.txt")
 VERSION = int(open(VERSION_FILE).read()) if os.path.exists(VERSION_FILE) else 1
 old = d4filter.decode(open(os.path.join(HERE, "testdata", "export_original.txt")).read())
 latest = d4filter.decode(open(os.path.join(HERE, "testdata", "export_v8_after_import.txt")).read())
@@ -58,28 +69,36 @@ UP, SIDE, IP_ONLY, CODEX, SELL = "#FF00FF", "#00FFFF", "#4A9AA5", "#FF3030", "#F
 # Sidegrades (same wanted-stat count, at least equipped Item Power) are only
 # shown for slots whose equipped piece already has this many wanted stats:
 # by then most remaining upgrades are better rolls, not more stats.
-SIDEGRADE_FROM = 3
+SIDEGRADE_FROM = settings.get("sidegrade_from", 3)
 IP_MAX = 900    # the game clamps the Item Power range maximum to 900
 
 # Wanted stats come from build.json (python maxroll_import.py <guide URL>).
-# Your own preferences on top of the guide:
-MUST = {"boots": MOVE_SPEED, "amulet": MOVE_SPEED}   # slot must have this stat
-NO_TEMPER_REMINDER = {"mainhand", "offhand", "ranged"}   # weapons get replaced too fast
-RARE_PLUS_ONLY = {"Ranged", "Melee"}   # stat tiers: Magic/Normal can't be tempered
-# (the melee Item-Power-only tier stays any rarity: a Magic weapon can still
-# be a DPS upgrade, and the tooltip's DPS comparison decides)
+# The character's own preferences on top of the guide (settings.json):
+BY_NAME = {v: k for k, v in NAMES.items()}
+MUST = {slot: BY_NAME[name] for slot, name in settings.get("must", {}).items()}
+NO_TEMPER_REMINDER = set(settings.get("no_temper_reminder", []))
+# Weapon stat tiers listed here need Rare or better (Magic/Normal can't be
+# tempered); the Item-Power-only weapon tier stays any rarity, since a Magic
+# weapon can still be a DPS upgrade.
+RARE_PLUS_ONLY = set(settings.get("rare_plus_only", []))
 RARE_PLUS = {"type": "rarity", "mask": 4 | 8 | 16 | 32 | 64}   # Rare and up
-MELEE = [SWORD, DAGGER]
-RANGED = [CROSSBOW, BOW]
-# (label, build/equipped slot keys, item types)
-GROUPS = [
+ARMOR_GROUPS = [
     ("Helm", ["helm"], [HELM]), ("Chest", ["chest"], [CHEST]),
     ("Gloves", ["gloves"], [GLOVES]), ("Pants", ["pants"], [PANTS]),
     ("Boots", ["boots"], [BOOTS]), ("Amulet", ["amulet"], [AMULET]),
-    ("Ring", ["ring1", "ring2"], [RING]), ("Ranged", ["ranged"], RANGED),
-    ("Melee", ["mainhand", "offhand"], MELEE),
+    ("Ring", ["ring1", "ring2"], [RING]),
 ]
-build = json.load(open(os.path.join(HERE, "build.json"), encoding="utf-8"))
+# (label, build/equipped slot keys, item types) for each class's weapons.
+CLASS_GROUPS = {
+    "rogue": [("Ranged", ["ranged"], [CROSSBOW, BOW]),
+              ("Melee", ["mainhand", "offhand"], [SWORD, DAGGER])],
+}
+if settings["class"] not in CLASS_GROUPS:
+    sys.exit(f"no weapon slot groups for class {settings['class']!r} yet: add them to CLASS_GROUPS")
+GROUPS = ARMOR_GROUPS + CLASS_GROUPS[settings["class"]]
+WEAPON_TYPES = {label: types for label, _, types in CLASS_GROUPS[settings["class"]]}
+WEAPON_KEYS = {label: keys for label, keys, _ in CLASS_GROUPS[settings["class"]]}
+build = json.load(open(os.path.join(CHAR_DIR, "build.json"), encoding="utf-8"))
 SLOTS = []
 for label, keys, types in GROUPS:
     wanted = []
@@ -93,16 +112,16 @@ for label, keys, types in GROUPS:
 unconfirmed = sorted({(w["id"], w["name"]) for s in build["slots"].values()
                       for w in s["wanted"] if not w["confirmed"]})
 
-eq_path = os.path.join(HERE, "equipped.json")
+eq_path = os.path.join(CHAR_DIR, "equipped.json")
 equipped = json.load(open(eq_path))
 # "_screenshots_processed_through" records the newest Documents\Diablo IV\Screenshots
 # file already read into equipped.json, so a gear update only needs newer ones.
-for arg in sys.argv[1:]:
+for arg in sys.argv[2:]:
     key, ip = arg.split("=")
     if key not in equipped:
         sys.exit(f"unknown slot {key!r}; use one of {', '.join(equipped)}")
     equipped[key]["ip"] = int(ip)
-if sys.argv[1:]:
+if sys.argv[2:]:
     json.dump(equipped, open(eq_path, "w"), indent=2)
 
 
@@ -149,16 +168,20 @@ def slot_rules(label, keys, types, wanted, must):
 
 
 summary = []
-rules = [rule("DoK Uniques", UP, {"type": "unique", "ids": [
-    DEATHS_PAVANE, ETNAS_LOST_DAGGER, ETNAS_LOST_DAGGER_CHARM,
-    PENITENT_GREAVES, PENITENT_GREAVES_CHARM]})]
+rules = []
+if settings.get("uniques"):
+    rules.append(rule(settings.get("uniques_rule", "Target Uniques"), UP,
+                      {"type": "unique", "ids": settings["uniques"]}))
 tiers = [slot_rules(*s) for s in SLOTS]
 rules += [r for t in tiers for r in t if r["color"] == UP]
 rules += [r for t in tiers for r in t if r["color"] == SIDE]
-rules.append(rule("Melee IP only", IP_ONLY, {"type": "item_type", "ids": MELEE},
-                  {"type": "item_power",
-                   "min": min(equipped[k]["ip"] for k in ("mainhand", "offhand")),
-                   "max": IP_MAX}))
+ip_group = settings.get("ip_only_group")
+if ip_group:   # weapon at or above equipped Item Power, any stats and rarity
+    rules.append(rule(f"{ip_group} IP only", IP_ONLY,
+                      {"type": "item_type", "ids": WEAPON_TYPES[ip_group]},
+                      {"type": "item_power",
+                       "min": min(equipped[k]["ip"] for k in WEAPON_KEYS[ip_group]),
+                       "max": IP_MAX}))
 rules.append(rule("Codex Upgrade", CODEX, {"type": "codex", "flag": 1}))
 # GA CDR as originally exported asked for "at least 2" of a single affix,
 # which can never match; it needs "at least 1".
@@ -170,7 +193,7 @@ rules += [dict(keep["Legendary Seal (Sell)"], color=SELL),
           dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
 assert {r["color"] for r in rules} <= {UP, SIDE, IP_ONLY, CODEX, SELL}, "one meaning per color"
 
-flt = {"name": f"DoK Upgrades v{VERSION}", "rules": rules,
+flt = {"name": f"{settings['filter_prefix']} v{VERSION}", "rules": rules,
        "f3": latest["f3"], "f4": latest["f4"]}
 assert len(rules) <= 25, len(rules)
 assert all(len(r["name"]) <= 24 for r in rules), "names over 24 chars are dropped"
@@ -182,11 +205,12 @@ for r in rules:
 
 s = d4filter.encode(flt)
 assert d4filter.encode(d4filter.decode(s)) == s
-json.dump(flt, open(os.path.join(HERE, "examples", "dok_tiers.json"), "w"), indent=2)
-open(os.path.join(HERE, "examples", "dok_tiers.txt"), "w").write(s + "\n")
-open(os.path.join(HERE, "examples", "dok_tiers.md"), "w", encoding="utf-8").write(
+json.dump(flt, open(os.path.join(CHAR_DIR, "filter.json"), "w"), indent=2)
+open(os.path.join(CHAR_DIR, "filter.txt"), "w").write(s + "\n")
+open(os.path.join(CHAR_DIR, "filter.md"), "w", encoding="utf-8").write(
     d4filter.table(d4filter.decode(s)) + "\n")
-print(f"v{VERSION}, {len(rules)}/25 rules, from {build['profile']!r} of planner {build['planner']}")
+print(f"{settings['name']} ({settings['class']}): v{VERSION}, {len(rules)}/25 rules, "
+      f"from {build['profile']!r} of planner {build['planner']}")
 # Temper reminders: untempered Rare-or-better equipped pieces. While leveling,
 # existing tempers are never replaced; new drops get tempered instead.
 for key, slot in build["slots"].items():

@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .cache/
 # personal: your gear, build data, generated filters and your game exports
+chars/
 equipped.json
 build.json
 examples/
