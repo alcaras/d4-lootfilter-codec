@@ -13,6 +13,9 @@ and only lights up items with at least its Item Power:
               them); also target uniques and endgame jackpots (GA CDR,
               All Skills). Sidegrades (same count) are deliberately not
               shown, to keep time in town short.
+  Cyan      = sidegrade, only in slots whose equipped piece already has
+              SIDEGRADE_FROM+ wanted stats: same count, at least its Item
+              Power; compare the rolls
   Dim teal  = melee weapon with at least equipped Item Power, any stats
               (Dance of Knives uses the melee weapons; the bow is only
               there for its aspect)
@@ -51,7 +54,11 @@ old = d4filter.decode(open(os.path.join(HERE, "testdata", "export_original.txt")
 latest = d4filter.decode(open(os.path.join(HERE, "testdata", "export_v8_after_import.txt")).read())
 keep = {r["name"].strip(): r for r in old["rules"]}
 
-UP, IP_ONLY, CODEX, SELL = "#FF00FF", "#4A9AA5", "#FF3030", "#FFA0D0"
+UP, SIDE, IP_ONLY, CODEX, SELL = "#FF00FF", "#00FFFF", "#4A9AA5", "#FF3030", "#FFA0D0"
+# Sidegrades (same wanted-stat count, at least equipped Item Power) are only
+# shown for slots whose equipped piece already has this many wanted stats:
+# by then most remaining upgrades are better rolls, not more stats.
+SIDEGRADE_FROM = 3
 IP_MAX = 900    # the game clamps the Item Power range maximum to 900
 
 # Wanted stats come from build.json (python maxroll_import.py <guide URL>).
@@ -134,6 +141,9 @@ def slot_rules(label, keys, types, wanted, must):
     # Power is the upgrade instead.
     n = min(have + 1, len(wanted))
     out = [rule(f"{label} up", UP, *base, *affixes(n))]
+    total_have = have + (must is not None)
+    if total_have >= SIDEGRADE_FROM and n > have:   # n == have: magenta already covers it
+        out.append(rule(f"{label} same", SIDE, *base, *affixes(have)))
     summary.append((label, floor, have + (must is not None), len(wanted) + (must is not None)))
     return out
 
@@ -143,7 +153,8 @@ rules = [rule("DoK Uniques", UP, {"type": "unique", "ids": [
     DEATHS_PAVANE, ETNAS_LOST_DAGGER, ETNAS_LOST_DAGGER_CHARM,
     PENITENT_GREAVES, PENITENT_GREAVES_CHARM]})]
 tiers = [slot_rules(*s) for s in SLOTS]
-rules += [r for t in tiers for r in t]
+rules += [r for t in tiers for r in t if r["color"] == UP]
+rules += [r for t in tiers for r in t if r["color"] == SIDE]
 rules.append(rule("Melee IP only", IP_ONLY, {"type": "item_type", "ids": MELEE},
                   {"type": "item_power",
                    "min": min(equipped[k]["ip"] for k in ("mainhand", "offhand")),
@@ -157,7 +168,7 @@ for c in ga_cdr["conditions"]:
         c["mode"] = 1
 rules += [dict(keep["Legendary Seal (Sell)"], color=SELL),
           dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
-assert {r["color"] for r in rules} <= {UP, IP_ONLY, CODEX, SELL}, "one meaning per color"
+assert {r["color"] for r in rules} <= {UP, SIDE, IP_ONLY, CODEX, SELL}, "one meaning per color"
 
 flt = {"name": f"DoK Upgrades v{VERSION}", "rules": rules,
        "f3": latest["f3"], "f4": latest["f4"]}
