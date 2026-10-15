@@ -77,7 +77,7 @@ IP_MAX = 900    # the game clamps the Item Power range maximum to 900
 BY_NAME = {v: k for k, v in NAMES.items()}
 MUST = {slot: BY_NAME[name] for slot, name in settings.get("must", {}).items()}
 NO_TEMPER_REMINDER = set(settings.get("no_temper_reminder", []))
-# Per-slot floor on wanted stats for the upgrade tier, e.g. {"Ring": 3} when the
+# Per-slot floor on wanted stats (counting the must stat) for the upgrade tier, e.g. {"Ring": 3} when the
 # equipped piece holds something the stats can't see (a Soulstone splinter).
 MIN_WANTED = settings.get("min_wanted", {})
 # Weapon stat tiers listed here need Rare or better (Magic/Normal can't be
@@ -178,7 +178,7 @@ def slot_rules(label, keys, types, wanted, must):
     # Only likely upgrades: more wanted stats than equipped. Once the equipped
     # piece has every wanted stat, a piece with all of them at higher Item
     # Power is the upgrade instead.
-    n = min(max(have + 1, MIN_WANTED.get(label, 0)), len(wanted))
+    n = min(max(have + 1, MIN_WANTED.get(label, 0) - (must is not None)), len(wanted))
     # Magic items have at most 2 affixes, so only rules needing 2 or fewer can match them.
     split = lambda r, k: rare_split(r) if k + (must is not None) <= 2 else [r]
     out = split(rule(f"{label} up", UP, *base, *affixes(n)), n)
