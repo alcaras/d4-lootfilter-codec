@@ -82,6 +82,10 @@ NO_TEMPER_REMINDER = set(settings.get("no_temper_reminder", []))
 # weapon can still be a DPS upgrade.
 RARE_PLUS_ONLY = set(settings.get("rare_plus_only", []))
 RARE_PLUS = {"type": "rarity", "mask": 4 | 8 | 16 | 32 | 64}   # Rare and up
+# From this Item Power up, Magic and Common items are never marked: a rule that
+# a Magic item could still pass (2 or fewer required affixes, or the Item Power
+# tier) is split into an any-rarity part below it and a Rare-or-better part above.
+RARE_PLUS_FROM = settings.get("rare_plus_from_ip", IP_MAX + 1)
 ARMOR_GROUPS = [
     ("Helm", ["helm"], [HELM]), ("Chest", ["chest"], [CHEST]),
     ("Gloves", ["gloves"], [GLOVES]), ("Pants", ["pants"], [PANTS]),
@@ -135,6 +139,19 @@ def rule(name, color, *conds, action="recolor"):
             "conditions": list(conds)}
 
 
+def rare_split(r):
+    """Apply rare_plus_from_ip to a rule a Magic item could pass."""
+    conds = r["conditions"]
+    ip = next(c for c in conds if c["type"] == "item_power")
+    if RARE_PLUS in conds or ip["min"] > IP_MAX or RARE_PLUS_FROM > IP_MAX:
+        return [r]
+    if ip["min"] >= RARE_PLUS_FROM:
+        return [dict(r, conditions=conds + [RARE_PLUS])]
+    low = [dict(c, max=RARE_PLUS_FROM - 1) if c is ip else c for c in conds]
+    high = [dict(c, min=RARE_PLUS_FROM) if c is ip else c for c in conds]
+    return [dict(r, conditions=low), dict(r, name=r["name"] + " R", conditions=high + [RARE_PLUS])]
+
+
 def slot_rules(label, keys, types, wanted, must):
     floor = min(equipped[k]["ip"] for k in keys)
     if must is None:
@@ -159,10 +176,12 @@ def slot_rules(label, keys, types, wanted, must):
     # piece has every wanted stat, a piece with all of them at higher Item
     # Power is the upgrade instead.
     n = min(have + 1, len(wanted))
-    out = [rule(f"{label} up", UP, *base, *affixes(n))]
+    # Magic items have at most 2 affixes, so only rules needing 2 or fewer can match them.
+    split = lambda r, k: rare_split(r) if k + (must is not None) <= 2 else [r]
+    out = split(rule(f"{label} up", UP, *base, *affixes(n)), n)
     total_have = have + (must is not None)
     if total_have >= SIDEGRADE_FROM and n > have:   # n == have: magenta already covers it
-        out.append(rule(f"{label} same", SIDE, *base, *affixes(have)))
+        out += split(rule(f"{label} same", SIDE, *base, *affixes(have)), have)
     summary.append((label, floor, have + (must is not None), len(wanted) + (must is not None)))
     return out
 
@@ -177,7 +196,7 @@ rules += [r for t in tiers for r in t if r["color"] == UP]
 rules += [r for t in tiers for r in t if r["color"] == SIDE]
 ip_group = settings.get("ip_only_group")
 if ip_group:   # weapon at or above equipped Item Power, any stats and rarity
-    rules.append(rule(f"{ip_group} IP only", IP_ONLY,
+    rules += rare_split(rule(f"{ip_group} IP only", IP_ONLY,
                       {"type": "item_type", "ids": WEAPON_TYPES[ip_group]},
                       {"type": "item_power",
                        "min": min(equipped[k]["ip"] for k in WEAPON_KEYS[ip_group]),
