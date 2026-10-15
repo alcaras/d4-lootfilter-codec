@@ -140,6 +140,7 @@ The filter name carries a version number (`DoK Upgrades vN`) so you can tell in-
 
 ### Changelog
 
+- **v44**: `min_wanted` sets a per-slot floor on wanted stats for the upgrade tier (Alcara: rings need 3, since 2-stat rings never beat the equipped one).
 - **v42**: from Item Power `rare_plus_from_ip` (600) up, Magic and Common items are no longer marked. Rules a Magic item could pass (the 2-affix ring tier, the melee Item Power tier) get a Rare-or-better condition there, splitting into an any-rarity part below it if needed.
 - **v17**: the melee Item-Power-only tier (dim teal) is any rarity again, so Magic weapons that might be a DPS upgrade still show; the stat tiers stay Rare or better.
 - **v16**: weapon rules require Rare or better (Magic and Normal items can't be tempered).
