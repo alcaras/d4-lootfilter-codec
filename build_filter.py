@@ -198,12 +198,14 @@ tiers = [slot_rules(*s) for s in SLOTS]
 rules += [r for t in tiers for r in t if r["color"] == UP]
 rules += [r for t in tiers for r in t if r["color"] == SIDE]
 ip_group = settings.get("ip_only_group")
-if ip_group:   # weapon at or above equipped Item Power, any stats and rarity
+if ip_group:   # weapon at or above equipped Item Power, any stats (but the group's must stat)
+    ip_must = MUST.get(WEAPON_KEYS[ip_group][0])
     rules += rare_split(rule(f"{ip_group} IP only", IP_ONLY,
                       {"type": "item_type", "ids": WEAPON_TYPES[ip_group]},
                       {"type": "item_power",
                        "min": min(equipped[k]["ip"] for k in WEAPON_KEYS[ip_group]),
-                       "max": IP_MAX}))
+                       "max": IP_MAX},
+                      *([{"type": "affixes", "ids": [ip_must], "mode": 1}] if ip_must else [])))
 rules.append(rule("Codex Upgrade", CODEX, {"type": "codex", "flag": 1}))
 # GA CDR as originally exported asked for "at least 2" of a single affix,
 # which can never match; it needs "at least 1".
