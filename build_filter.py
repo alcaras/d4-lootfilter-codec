@@ -201,7 +201,10 @@ if settings.get("uniques"):
 # like target uniques: [{"name": ..., "conditions": [...]}, ...]
 for x in settings.get("extra_rules", []):
     rules.append(rule(x["name"], UP, *x["conditions"]))
-tiers = [slot_rules(*s) for s in SLOTS]
+# Slots settled by a unique ("skip_slots"): no stat tiers; an extra rule targets
+# better copies of the unique instead.
+SKIP = set(settings.get("skip_slots", []))
+tiers = [slot_rules(*s) for s in SLOTS if s[0] not in SKIP]
 rules += [r for t in tiers for r in t if r["color"] == UP]
 rules += [r for t in tiers for r in t if r["color"] == SIDE]
 ip_group = settings.get("ip_only_group")
