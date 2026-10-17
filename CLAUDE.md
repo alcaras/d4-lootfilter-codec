@@ -11,7 +11,7 @@ Each character has its own folder `chars/<key>/` (git-ignored, personal):
 
 | Key | Character | Class / build | Filter name |
 |---|---|---|---|
-| `alcara` | Alcara | Rogue, Dance of Knives (poison), Maxroll Starter profile | DoK Upgrades vN |
+| `alcara` | Alcara | Rogue, Dance of Knives (poison), Maxroll endgame guide, Midgame profile (from level 70) | DoK Upgrades vN |
 
 All characters' screenshots land in the same folder. The character name is shown in the character panel ("ALCARA"), so use it to tell which character a screenshot belongs to. If it's unclear, ask.
 
@@ -41,8 +41,8 @@ The player's gear and filters are private: `chars/` and `testdata/` are git-igno
 The player's preferences (carry over to new characters unless told otherwise): boots and amulet must have Movement Speed; weapon stat tiers must be Rare or better; below `rare_plus_from_ip` (600 for Alcara) the dim-teal Item Power tier and 2-affix rules are any rarity, and from it up Magic and Common items are never marked; existing tempers are never replaced while leveling (temper better drops instead); weapons are swapped as soon as a better one drops and are not tempered while leveling, so they get no temper reminders; only clearly better swaps (about 5%+) are worth the materials.
 
 ## New character
-1. Create `chars/<key>/settings.json` (copy `chars/alcara/settings.json` and edit): name, class, build, `filter_prefix` (keep rule names within 24 characters), guide URL and profile, `uniques` (unique item IDs to always highlight), `must`, `rare_plus_only`, `ip_only_group`, `no_temper_reminder`, `sidegrade_from`, `rare_plus_from_ip`, `min_wanted` (per-slot floor on wanted stats for the upgrade tier, counting the `must` stat, e.g. `{"Ring": 3}`).
-2. `python maxroll_import.py <guide URL> --char <key> [--profile NAME]` writes its `build.json`. Any IDs it flags as unconfirmed need one in-game import/export check.
+1. Create `chars/<key>/settings.json` (copy `chars/alcara/settings.json` and edit): name, class, build, `filter_prefix` (keep rule names within 24 characters), guide URL and profile, `uniques` (unique item IDs to always highlight; IDs not yet in `ids.py` need a name in `unique_names`), `must`, `rare_plus_only`, `ip_only_group`, `no_temper_reminder`, `sidegrade_from`, `rare_plus_from_ip`, `min_wanted` (per-slot floor on wanted stats for the upgrade tier, counting the `must` stat, e.g. `{"Ring": 3}`).
+2. `python maxroll_import.py <guide URL> --char <key> [--profile NAME]` writes its `build.json`. Any IDs it flags as unconfirmed need one in-game import/export check. It skips a unique's fixed lines and runeword effects and prints the unique's item ID, to add to `uniques`.
 3. If the class is new, add its weapon slot groups to `CLASS_GROUPS` in `build_filter.py` (e.g. two-handers, shields, off-hand focus or totem). Their item type IDs need confirming in-game like affix IDs. Main stats differ too (Paladin: Strength; Warlock: Willpower; see DAMAGE.md for the per-class damage values).
 4. Start `equipped.json` from a full set of gear screenshots, then build. Add the character to the table above.
 

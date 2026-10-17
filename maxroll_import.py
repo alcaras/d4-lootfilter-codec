@@ -132,10 +132,24 @@ def main():
         if idx is None:
             continue
         item = planner["items"][str(idx)]
-        wanted = [resolve(e["nid"]) for e in item.get("explicits", [])]
+        # A unique's own fixed lines (its power, fixed skill ranks) and runeword
+        # effects can't roll on other items, so they aren't wanted stats; the
+        # unique itself is reported as a target instead.
+        uniq = game["items"].get(item["id"]) if "_Unique_" in str(item["id"]) else None
+        fixed = set(uniq["explicits"]) if uniq else set()
+        wanted = []
+        for e in item.get("explicits", []):
+            name = affixes.get(e["nid"], {}).get("name", "")
+            if name in fixed or name.startswith("Runeword_"):
+                continue
+            w = resolve(e["nid"])
+            if w["id"] not in [x["id"] for x in wanted]:
+                wanted.append(w)
         tempers = [prettify_temper(affixes[t["nid"]]["name"]) if t["nid"] in affixes else str(t["nid"])
                    for t in item.get("tempered", [])]
         slots[key] = {"item": item.get("name") or item["id"], "wanted": wanted, "tempers": tempers}
+        if uniq:
+            slots[key]["unique"] = {"id": uniq["id"], "maxroll": item["id"]}
 
     out = {"source": args.url, "planner": pid, "profile": profile["name"],
            "game_data_version": game.get("version"), "slots": slots}
@@ -145,7 +159,8 @@ def main():
     unconfirmed = []
     for key, s in slots.items():
         names = [w["name"] + ("" if w["confirmed"] else " (?)") for w in s["wanted"]]
-        print(f"  {key:8} {', '.join(names)}  | temper: {', '.join(s['tempers']) or '-'}")
+        target = f"  [unique {s['unique']['maxroll']} = {s['unique']['id']}]" if "unique" in s else ""
+        print(f"  {key:8} {', '.join(names)}  | temper: {', '.join(s['tempers']) or '-'}{target}")
         unconfirmed += [w for w in s["wanted"] if not w["confirmed"]]
     if unconfirmed:
         print("\nNot yet confirmed in-game (best guess; verify with an import/export):")

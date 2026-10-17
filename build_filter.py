@@ -80,6 +80,9 @@ NO_TEMPER_REMINDER = set(settings.get("no_temper_reminder", []))
 # Per-slot floor on wanted stats (counting the must stat) for the upgrade tier, e.g. {"Ring": 3} when the
 # equipped piece holds something the stats can't see (a Soulstone splinter).
 MIN_WANTED = settings.get("min_wanted", {})
+# Target uniques not yet in ids.py (unconfirmed in-game), by item ID.
+for i, n in settings.get("unique_names", {}).items():
+    NAMES.setdefault(int(i), n)
 # Weapon stat tiers listed here need Rare or better (Magic/Normal can't be
 # tempered); the Item-Power-only weapon tier stays any rarity, since a Magic
 # weapon can still be a DPS upgrade.
