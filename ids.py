@@ -38,6 +38,7 @@ WEAPON_DMG = 2620563          # X2_Fast_Weapon_Damage_1HAxe (used for every weap
 DOT_DMG = 1829590             # S04_Damage_DoT (Damage Over Time Multiplier)
 ALL_RESIST = 1834296          # S04_Resistance_All
 BARRIER_GEN = 2517794         # S11_BarrierGeneration
+POISON_RESIST = 1829620       # S04_Resistance_Single_Poison
 
 # --- Item types (SNO group 98) --------------------------------------------
 HELM = 446830
@@ -60,13 +61,15 @@ ETNAS_LOST_DAGGER = 2580865         # 1HDagger_Unique_Rogue_003_x2
 ETNAS_LOST_DAGGER_CHARM = 2589692   # Talisman_Charm_Unique_1HDagger_Unique_Rogue_003_x2
 PENITENT_GREAVES = 208264           # Boots_Unique_Generic_001
 PENITENT_GREAVES_CHARM = 2583994    # Talisman_Charm_Unique_Boots_Unique_Generic_001
+COWL_OF_THE_NAMELESS = 494989       # Helm_Unique_Rogue_001
+SHROUDED_GIFT = 2582107             # Pants_Unique_Rogue_001_x2
 
 # Affix IDs the in-game filter is confirmed to accept (survived an in-game
 # import/export). maxroll_import.py maps Maxroll's per-slot variants onto these.
 CONFIRMED_AFFIXES = [
     CDR, DEXTERITY, MOVE_SPEED, ENERGY_REGEN, ALL_SKILLS, CRIT_CHANCE, VULN_DMG,
     POISON_DMG, MAX_LIFE, DANCE_OF_KNIVES, ALL_DAMAGE, LIFE_ON_HIT, ARMOR,
-    SUBTERFUGE, WEAPON_DMG, DOT_DMG, ALL_RESIST, BARRIER_GEN,
+    SUBTERFUGE, WEAPON_DMG, DOT_DMG, ALL_RESIST, BARRIER_GEN, POISON_RESIST,
 ]
 
 NAMES = {
@@ -78,13 +81,14 @@ NAMES = {
     ALL_DAMAGE: "All Damage Multiplier", LIFE_ON_HIT: "Life On Hit", ARMOR: "Armor",
     SUBTERFUGE: "+ to Subterfuge Skills", WEAPON_DMG: "Weapon Damage",
     DOT_DMG: "Damage Over Time Multiplier", ALL_RESIST: "All Resistance",
-    BARRIER_GEN: "Barrier Generation",
+    BARRIER_GEN: "Barrier Generation", POISON_RESIST: "Poison Resistance",
     HELM: "Helm", CHEST: "Chest Armor", GLOVES: "Gloves", PANTS: "Pants", BOOTS: "Boots",
     AMULET: "Amulet", RING: "Ring", SWORD: "Sword", DAGGER: "Dagger", CROSSBOW: "Crossbow",
     BOW: "Bow", CHARM: "Charm", SEAL: "Horadric Seal",
     DEATHS_PAVANE: "Death's Pavane", ETNAS_LOST_DAGGER: "Etna's Lost Dagger",
     ETNAS_LOST_DAGGER_CHARM: "Etna's Lost Dagger (charm)",
     PENITENT_GREAVES: "Penitent Greaves", PENITENT_GREAVES_CHARM: "Penitent Greaves (charm)",
+    COWL_OF_THE_NAMELESS: "Cowl of the Nameless", SHROUDED_GIFT: "Shrouded Gift",
     # Death Trap Rogue uniques (appear in testdata/export_original.txt)
     1612292: "DT unique Chest_Unique_Rogue_100", 1704785: "DT unique Boots_Unique_Rogue_100",
     470539: "DT unique Pants_Unique_Rogue_004", 2424373: "DT unique 1HDagger_Unique_Generic_001",
