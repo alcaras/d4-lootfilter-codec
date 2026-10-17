@@ -63,6 +63,12 @@ PENITENT_GREAVES = 208264           # Boots_Unique_Generic_001
 PENITENT_GREAVES_CHARM = 2583994    # Talisman_Charm_Unique_Boots_Unique_Generic_001
 COWL_OF_THE_NAMELESS = 494989       # Helm_Unique_Rogue_001
 SHROUDED_GIFT = 2582107             # Pants_Unique_Rogue_001_x2
+SEAL_OF_THE_DIAMOND_MIND = 2622269  # Talisman_Seal_MythicUnique_03
+
+# --- Talisman sets (filter condition type 9) -------------------------------
+SPELLBOUND_STEEL = 2296522          # Talisman_Rogue_04
+SIGHTLESS = 2296524                 # Talisman_Rogue_05
+# Not accepted by the filter (dropped on import): ConditionRune 446841, EffectRune 446842
 
 # Affix IDs the in-game filter is confirmed to accept (survived an in-game
 # import/export). maxroll_import.py maps Maxroll's per-slot variants onto these.
@@ -89,6 +95,8 @@ NAMES = {
     ETNAS_LOST_DAGGER_CHARM: "Etna's Lost Dagger (charm)",
     PENITENT_GREAVES: "Penitent Greaves", PENITENT_GREAVES_CHARM: "Penitent Greaves (charm)",
     COWL_OF_THE_NAMELESS: "Cowl of the Nameless", SHROUDED_GIFT: "Shrouded Gift",
+    SEAL_OF_THE_DIAMOND_MIND: "Seal of the Diamond Mind",
+    SPELLBOUND_STEEL: "Spellbound Steel (set)", SIGHTLESS: "the Sightless (set)",
     # Death Trap Rogue uniques (appear in testdata/export_original.txt)
     1612292: "DT unique Chest_Unique_Rogue_100", 1704785: "DT unique Boots_Unique_Rogue_100",
     470539: "DT unique Pants_Unique_Rogue_004", 2424373: "DT unique 1HDagger_Unique_Generic_001",
