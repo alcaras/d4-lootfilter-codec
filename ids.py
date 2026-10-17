@@ -68,7 +68,8 @@ SEAL_OF_THE_DIAMOND_MIND = 2622269  # Talisman_Seal_MythicUnique_03
 # --- Talisman sets (filter condition type 9) -------------------------------
 SPELLBOUND_STEEL = 2296522          # Talisman_Rogue_04
 SIGHTLESS = 2296524                 # Talisman_Rogue_05
-# Not accepted by the filter (dropped on import): ConditionRune 446841, EffectRune 446842
+# Not accepted by the filter's item-type condition (dropped on import): Rune 446840,
+# ConditionRune 446841, EffectRune 446842. Runes can't be targeted by type.
 
 # Affix IDs the in-game filter is confirmed to accept (survived an in-game
 # import/export). maxroll_import.py maps Maxroll's per-slot variants onto these.
