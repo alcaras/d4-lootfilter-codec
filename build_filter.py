@@ -197,6 +197,10 @@ rules = []
 if settings.get("uniques"):
     rules.append(rule(settings.get("uniques_rule", "Target Uniques"), UP,
                       {"type": "unique", "ids": settings["uniques"]}))
+# Build-specific talisman and rune targets (settings "extra_rules"), shown magenta
+# like target uniques: [{"name": ..., "conditions": [...]}, ...]
+for x in settings.get("extra_rules", []):
+    rules.append(rule(x["name"], UP, *x["conditions"]))
 tiers = [slot_rules(*s) for s in SLOTS]
 rules += [r for t in tiers for r in t if r["color"] == UP]
 rules += [r for t in tiers for r in t if r["color"] == SIDE]
