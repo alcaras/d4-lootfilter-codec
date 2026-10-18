@@ -169,6 +169,8 @@ def slot_rules(label, keys, types, wanted, must):
             {"type": "item_power", "min": floor, "max": IP_MAX}]
     if label in RARE_PLUS_ONLY:
         base.append(RARE_PLUS)
+    if label in settings.get("ancestral_only", []):   # 900 Item Power, can roll Greater Affixes
+        base.append({"type": "properties", "mask": 4})
 
     def affixes(n):
         if must is None:
