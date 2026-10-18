@@ -70,6 +70,15 @@ FIST_OF_THE_IRON_ROSE = 2580715     # Gloves_Unique_Rogue_001_x2
 # --- Talisman sets (filter condition type 9) -------------------------------
 SPELLBOUND_STEEL = 2296522          # Talisman_Rogue_04
 SIGHTLESS = 2296524                 # Talisman_Rogue_05
+# Every equipment item type, as used in Maxroll's published hide rules
+# (testdata/maxroll_*.txt, so accepted by the game).
+GEAR_TYPES = [446819, 446827, 446813, 446802, 446826, 446832, 446823, 446799, 446836,
+              446805, 1462897, 446778, 446809, 446831, 446837, 446834, 446801, 446804,
+              446830, 446788, 446825, 446796, 1495597, 446803, 446833, 446829, 2312856]
+GEAR_TYPE_NAMES = {446819: "Wand", 446827: "Totem", 446813: "Polearm", 446802: "Two-Handed Axe",
+    446826: "Focus", 446799: "Two-Handed Sword", 446805: "Two-Handed Scythe", 1462897: "Glaive",
+    446778: "Mace", 446834: "Shield", 446801: "Axe", 446804: "Scythe", 446788: "Two-Handed Mace",
+    1495597: "Quarterstaff", 446803: "Staff", 2312856: "Flail"}
 # Not accepted by the filter's item-type condition (dropped on import): Rune 446840,
 # ConditionRune 446841, EffectRune 446842. Runes can't be targeted by type.
 
@@ -81,7 +90,7 @@ CONFIRMED_AFFIXES = [
     SUBTERFUGE, WEAPON_DMG, DOT_DMG, ALL_RESIST, BARRIER_GEN, POISON_RESIST,
 ]
 
-NAMES = {
+NAMES = {**GEAR_TYPE_NAMES,
     CDR: "Cooldown Reduction", DEXTERITY: "Dexterity", MOVE_SPEED: "Movement Speed",
     ENERGY_REGEN: "Energy Regeneration", ALL_SKILLS: "+ to All Skills",
     CRIT_CHANCE: "Critical Strike Chance", VULN_DMG: "Vulnerable Damage Multiplier",

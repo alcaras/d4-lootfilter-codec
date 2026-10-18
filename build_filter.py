@@ -240,7 +240,13 @@ flt = {"name": f"{settings['filter_prefix']} v{VERSION}", "rules": rules,
        "f3": latest["f3"], "f4": latest["f4"]}
 assert len(rules) <= 25, len(rules)
 assert all(len(r["name"]) <= 24 for r in rules), "names over 24 chars are dropped"
-assert not any(r["action"] == "hide" and r["enabled"] for r in rules)
+# Hide rules go last: the game applies the first matching rule, so everything
+# marked above still shows (Maxroll's published filters rely on the same order).
+# "gear" in an item_type condition expands to every equipment type.
+for x in settings.get("hide_rules", []):
+    conds = [dict(c, ids=GEAR_TYPES) if c.get("ids") == "gear" else c for c in x["conditions"]]
+    rules.append(rule(x["name"], SELL, *conds, action="hide"))
+assert all(r["action"] != "hide" for r in rules[:len(rules) - len(settings.get("hide_rules", []))])
 for r in rules:
     for c in r["conditions"]:
         for i in c.get("ids", []):
