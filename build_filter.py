@@ -226,8 +226,14 @@ ga_cdr = json.loads(json.dumps(keep["GA CDR"]))
 for c in ga_cdr["conditions"]:
     if c["type"] == "affixes":
         c["mode"] = 1
-rules += [dict(keep["Legendary Seal (Sell)"], color=SELL),
-          dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
+# Legendary-or-better seals: sell fodder by default; "keep_legendary_seals" marks
+# them magenta instead (3 Legendary seals transmute into one with +1 charm slot).
+seal = keep["Legendary Seal (Sell)"]
+if settings.get("keep_legendary_seals"):
+    seal = dict(seal, name="Legendary Seals", action="recolor", color=UP)
+else:
+    seal = dict(seal, color=SELL)
+rules += [seal, dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
 assert {r["color"] for r in rules} <= {UP, SIDE, IP_ONLY, CODEX, SELL}, "one meaning per color"
 
 flt = {"name": f"{settings['filter_prefix']} v{VERSION}", "rules": rules,
