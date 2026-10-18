@@ -64,6 +64,8 @@ PENITENT_GREAVES_CHARM = 2583994    # Talisman_Charm_Unique_Boots_Unique_Generic
 COWL_OF_THE_NAMELESS = 494989       # Helm_Unique_Rogue_001
 SHROUDED_GIFT = 2582107             # Pants_Unique_Rogue_001_x2
 SEAL_OF_THE_DIAMOND_MIND = 2622269  # Talisman_Seal_MythicUnique_03
+LEORICS_CROWN = 2647147             # Helm_Unique_Generic_005
+FIST_OF_THE_IRON_ROSE = 2580715     # Gloves_Unique_Rogue_001_x2
 
 # --- Talisman sets (filter condition type 9) -------------------------------
 SPELLBOUND_STEEL = 2296522          # Talisman_Rogue_04
@@ -97,6 +99,7 @@ NAMES = {
     PENITENT_GREAVES: "Penitent Greaves", PENITENT_GREAVES_CHARM: "Penitent Greaves (charm)",
     COWL_OF_THE_NAMELESS: "Cowl of the Nameless", SHROUDED_GIFT: "Shrouded Gift",
     SEAL_OF_THE_DIAMOND_MIND: "Seal of the Diamond Mind",
+    LEORICS_CROWN: "Leoric's Crown", FIST_OF_THE_IRON_ROSE: "Fist of the Iron Rose",
     SPELLBOUND_STEEL: "Spellbound Steel (set)", SIGHTLESS: "the Sightless (set)",
     # Death Trap Rogue uniques (appear in testdata/export_original.txt)
     1612292: "DT unique Chest_Unique_Rogue_100", 1704785: "DT unique Boots_Unique_Rogue_100",
