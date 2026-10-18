@@ -186,7 +186,8 @@ def slot_rules(label, keys, types, wanted, must):
     split = lambda r, k: rare_split(r) if k + (must is not None) <= 2 else [r]
     out = split(rule(f"{label} up", UP, *base, *affixes(n)), n)
     total_have = have + (must is not None)
-    if total_have >= SIDEGRADE_FROM and n > have:   # n == have: magenta already covers it
+    if (total_have >= SIDEGRADE_FROM and n > have   # n == have: magenta already covers it
+            and label not in settings.get("no_sidegrade", [])):
         out += split(rule(f"{label} same", SIDE, *base, *affixes(have)), have)
     summary.append((label, floor, have + (must is not None), len(wanted) + (must is not None)))
     return out
