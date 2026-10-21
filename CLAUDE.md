@@ -58,6 +58,9 @@ The leveling filter gets noisy at Torment, where most drops share the Item Power
 - Talisman sets and target seals: `extra_rules` with `talisman_set`; runes can't be targeted (all rune item types are dropped on import).
 - After adding a new ID or condition type, ask for an in-game export and confirm it survived (add it to `testdata/`).
 
+## All guide profiles
+The filter is built from one profile (`settings.json` `profile`), but drops are judged against every profile the guide has. `python profiles_overview.py <guide URL> --char <key>` writes `chars/<key>/profiles.md` (each profile's items, powers, sockets, tempers, charms, seal); regenerate it after re-importing. Put the uniques, runeword bases and charm sets from the endgame profiles (Endgame, Bossing, Pushing, ...) into `uniques` / `extra_rules` so the filter marks them too.
+
 ## Upgrade questions
 For "is this item better?" (the play-companion conventions are in ../CLAUDE.md) use the bucket model in DAMAGE.md: get the comparison tooltip plus the character sheet's offensive stats, compute the ratio per bucket, and say plainly when a result is within about 5% or depends on unmodelled effects.
 

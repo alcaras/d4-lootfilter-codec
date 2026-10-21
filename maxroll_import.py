@@ -45,6 +45,7 @@ TEMPER_NAMES = [  # substring of the temper affix name -> readable name
     ("Type_Poison", "Poison Damage"), ("to_DoT", "Damage over Time"),
     ("Armor", "Armor"), ("Resistance", "Resistance"), ("CritChance", "Critical Strike Chance"),
     ("CDR", "Cooldown Reduction"), ("to_Close", "Damage to Close Enemies"),
+    ("Imbue_Potency", "Imbuement Potency"),
 ]
 
 
