@@ -244,7 +244,7 @@ if settings.get("keep_legendary_seals"):
     seal = dict(seal, name="Legendary Seals", action="recolor", color=UP)
 else:
     seal = dict(seal, color=SELL)
-rules += [seal, dict(ga_cdr, color=UP), dict(keep["All Skills"], color=UP)]
+rules += [seal] + ([dict(ga_cdr, color=UP)] if settings.get("ga_cdr", True) else []) + [dict(keep["All Skills"], color=UP)]
 assert {r["color"] for r in rules} <= {UP, SIDE, IP_ONLY, CODEX, SELL}, "one meaning per color"
 
 flt = {"name": f"{settings['filter_prefix']} v{VERSION}", "rules": rules,
