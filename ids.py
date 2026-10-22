@@ -147,6 +147,6 @@ NAMES = {**GEAR_TYPE_NAMES,
     SPELLBOUND_STEEL: "Spellbound Steel (set)", SIGHTLESS: "the Sightless (set)",
     # Death Trap Rogue uniques (appear in testdata/export_original.txt)
     1612292: "DT unique Chest_Unique_Rogue_100", 1704785: "DT unique Boots_Unique_Rogue_100",
-    470539: "DT unique Pants_Unique_Rogue_004", 2424373: "DT unique 1HDagger_Unique_Generic_001",
+    470539: "DT unique Pants_Unique_Rogue_004", 2424373: "Rustbitten Dirk",
     2589684: "Sea Lord's Fine Gloves (charm)",
 }
