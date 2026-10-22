@@ -162,6 +162,9 @@ def rare_split(r):
     return [dict(r, conditions=low), dict(r, name=r["name"] + " R", conditions=high + [RARE_PLUS])]
 
 
+AFFIX_CAP = 4
+
+
 def slot_rules(label, keys, types, wanted, must):
     floor = min(equipped[k]["ip"] for k in keys)
     if must is None:
@@ -190,11 +193,15 @@ def slot_rules(label, keys, types, wanted, must):
     n = min(max(have + 1, MIN_WANTED.get(label, 0) - (must is not None)), len(wanted))
     # Magic items have at most 2 affixes, so only rules needing 2 or fewer can match them.
     split = lambda r, k: rare_split(r) if k + (must is not None) <= 2 else [r]
-    out = split(rule(f"{label} up", UP, *base, *affixes(n)), n)
+    # The game accepts "at least N" only up to 4 and resets anything higher to 1
+    # (seen in the Warlock v33 export), so an upgrade needing 5+ can't be expressed:
+    # those slots get only the 4-stat sidegrade tier.
+    out = split(rule(f"{label} up", UP, *base, *affixes(n)), n) if n <= AFFIX_CAP else []
     total_have = have + (must is not None)
-    if (total_have >= SIDEGRADE_FROM and n > have   # n == have: magenta already covers it
+    same = min(have, AFFIX_CAP)
+    if (total_have >= SIDEGRADE_FROM and (n > same or not out)   # else magenta already covers it
             and label not in settings.get("no_sidegrade", [])):
-        out += split(rule(f"{label} same", SIDE, *base, *affixes(have)), have)
+        out += split(rule(f"{label} same", SIDE, *base, *affixes(same)), same)
     summary.append((label, floor, have + (must is not None), len(wanted) + (must is not None)))
     return out
 
