@@ -39,6 +39,15 @@ DOT_DMG = 1829590             # S04_Damage_DoT (Damage Over Time Multiplier)
 ALL_RESIST = 1834296          # S04_Resistance_All
 BARRIER_GEN = 2517794         # S11_BarrierGeneration
 POISON_RESIST = 1829620       # S04_Resistance_Single_Poison
+# Warlock stats (confirmed via a Warlock filter import/export)
+WILLPOWER = 1829574           # S04_CoreStat_Willpower
+ATTACK_SPEED = 1829556        # S04_AttackSpeed
+FIRE_DMG = 2558711            # X2_DamageType_Fire
+LIFE_REGEN = 1829594          # S04_LifeRegen
+WRATH_PER_SEC = 2532220       # S04_Resource_Per_Second_Wrath
+DEMONOLOGY_SKILLS = 2534856   # X2_SkillRankBonus_Warlock_Category_Demonology
+HELLFIRE_SKILLS = 2534852     # X2_SkillRankBonus_Warlock_Category_Hellfire
+BLAZING_SCREAM = 2534726      # X2_SkillRankBonus_Warlock_Core_BlazingScream
 
 # --- Item types (SNO group 98) --------------------------------------------
 HELM = 446830
@@ -88,6 +97,8 @@ CONFIRMED_AFFIXES = [
     CDR, DEXTERITY, MOVE_SPEED, ENERGY_REGEN, ALL_SKILLS, CRIT_CHANCE, VULN_DMG,
     POISON_DMG, MAX_LIFE, DANCE_OF_KNIVES, ALL_DAMAGE, LIFE_ON_HIT, ARMOR,
     SUBTERFUGE, WEAPON_DMG, DOT_DMG, ALL_RESIST, BARRIER_GEN, POISON_RESIST,
+    WILLPOWER, ATTACK_SPEED, FIRE_DMG, LIFE_REGEN, WRATH_PER_SEC, DEMONOLOGY_SKILLS,
+    HELLFIRE_SKILLS, BLAZING_SCREAM,
 ]
 
 NAMES = {**GEAR_TYPE_NAMES,
@@ -100,6 +111,14 @@ NAMES = {**GEAR_TYPE_NAMES,
     SUBTERFUGE: "+ to Subterfuge Skills", WEAPON_DMG: "Weapon Damage",
     DOT_DMG: "Damage Over Time Multiplier", ALL_RESIST: "All Resistance",
     BARRIER_GEN: "Barrier Generation", POISON_RESIST: "Poison Resistance",
+    WILLPOWER: "Willpower", ATTACK_SPEED: "Attack Speed", FIRE_DMG: "Fire Damage",
+    LIFE_REGEN: "Life Regeneration", WRATH_PER_SEC: "Wrath per Second",
+    DEMONOLOGY_SKILLS: "+ to Demonology Skills", HELLFIRE_SKILLS: "+ to Hellfire Skills",
+    BLAZING_SCREAM: "+ to Blazing Scream",
+    # Warlock uniques (confirmed in the same export)
+    2549226: "Moloch's Beating Flame", 1306326: "Temerity", 2549159: "Seed of Horazon",
+    2549203: "Ae'grom's Schism", 2548622: "Anathema of the Primes", 2548635: "Litany of Sable",
+    2549210: "Hands of the Worldbreaker", 2548620: "Elegy",
     HELM: "Helm", CHEST: "Chest Armor", GLOVES: "Gloves", PANTS: "Pants", BOOTS: "Boots",
     AMULET: "Amulet", RING: "Ring", SWORD: "Sword", DAGGER: "Dagger", CROSSBOW: "Crossbow",
     BOW: "Bow", CHARM: "Charm", SEAL: "Horadric Seal",
