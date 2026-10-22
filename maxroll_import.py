@@ -37,7 +37,7 @@ PLANNER_LINK = re.compile(r"https://maxroll\.gg/d4/planner/([A-Za-z0-9]+)")
 
 # planner equipment slot -> our slot key
 SLOTS = {"4": "helm", "5": "chest", "13": "gloves", "14": "pants", "15": "boots",
-         "18": "amulet", "16": "ring1", "17": "ring2", "10": "ranged",
+         "18": "amulet", "16": "ring1", "17": "ring2", "10": "ranged", "7": "weapon",
          "11": "mainhand", "12": "offhand"}
 
 TEMPER_NAMES = [  # substring of the temper affix name -> readable name

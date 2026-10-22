@@ -16,7 +16,7 @@ import re
 from maxroll_import import GAME_DATA, PLANNER_API, fetch, planner_id, prettify_temper
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SLOT_NAMES = {"4": "Helm", "5": "Chest", "13": "Gloves", "14": "Pants", "15": "Boots",
+SLOT_NAMES = {"7": "Weapon", "4": "Helm", "5": "Chest", "13": "Gloves", "14": "Pants", "15": "Boots",
               "18": "Amulet", "16": "Ring 1", "17": "Ring 2", "10": "Ranged",
               "11": "Main hand", "12": "Off-hand", "20": "Seal", "21": "Charm 1",
               "22": "Charm 2", "23": "Charm 3", "24": "Charm 4", "25": "Charm 5",
