@@ -88,6 +88,8 @@ FIST_OF_THE_IRON_ROSE = 2580715     # Gloves_Unique_Rogue_001_x2
 # --- Talisman sets (filter condition type 9) -------------------------------
 SPELLBOUND_STEEL = 2296522          # Talisman_Rogue_04
 SIGHTLESS = 2296524                 # Talisman_Rogue_05
+FLESH_OF_ABADDON = 2340371          # Talisman_Warlock_02 (unconfirmed)
+RITE_OF_THE_NAMELESS = 2340376      # Talisman_Warlock_04 (unconfirmed)
 # Every equipment item type, as used in Maxroll's published hide rules
 # (testdata/maxroll_*.txt, so accepted by the game).
 GEAR_TYPES = [446819, 446827, 446813, 446802, 446826, 446832, 446823, 446799, 446836,
@@ -145,6 +147,7 @@ NAMES = {**GEAR_TYPE_NAMES,
     SEAL_OF_THE_DIAMOND_MIND: "Seal of the Diamond Mind",
     LEORICS_CROWN: "Leoric's Crown", FIST_OF_THE_IRON_ROSE: "Fist of the Iron Rose",
     SPELLBOUND_STEEL: "Spellbound Steel (set)", SIGHTLESS: "the Sightless (set)",
+    FLESH_OF_ABADDON: "Flesh of Abaddon (set)", RITE_OF_THE_NAMELESS: "Rite of the Nameless (set)",
     # Death Trap Rogue uniques (appear in testdata/export_original.txt)
     1612292: "DT unique Chest_Unique_Rogue_100", 1704785: "DT unique Boots_Unique_Rogue_100",
     470539: "DT unique Pants_Unique_Rogue_004", 2424373: "Rustbitten Dirk",
