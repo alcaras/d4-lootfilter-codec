@@ -39,6 +39,15 @@ DOT_DMG = 1829590             # S04_Damage_DoT (Damage Over Time Multiplier)
 ALL_RESIST = 1834296          # S04_Resistance_All
 BARRIER_GEN = 2517794         # S11_BarrierGeneration
 POISON_RESIST = 1829620       # S04_Resistance_Single_Poison
+# Warlock endgame stats (confirmed in the Warlock v14 export)
+CC_DURATION_RED = 1829558     # S04_CC_Duration_Reduction
+CRIT_DAMAGE = 1829586         # S04_CritDamage
+POTION_CHARGES = 1829602      # S04_PotionCharges
+RESOURCE_GAIN = 1829664       # S04_ResourceGain
+RESOURCE_COST_RED = 1915409   # S04_Resource_Cost_Reduction_AllClasses_Lesser
+CORE_SKILLS = 1928753         # S04_SkillRankBonus_Generic_Category_Core
+DAMAGE_REDUCTION = 1928803    # S04_DamageReduction
+RAMPAGE_RANKS = 2534782       # X2_SkillRankBonus_Warlock_Special_Rampage
 # Warlock stats (confirmed via a Warlock filter import/export)
 WILLPOWER = 1829574           # S04_CoreStat_Willpower
 ATTACK_SPEED = 1829556        # S04_AttackSpeed
@@ -98,7 +107,8 @@ CONFIRMED_AFFIXES = [
     POISON_DMG, MAX_LIFE, DANCE_OF_KNIVES, ALL_DAMAGE, LIFE_ON_HIT, ARMOR,
     SUBTERFUGE, WEAPON_DMG, DOT_DMG, ALL_RESIST, BARRIER_GEN, POISON_RESIST,
     WILLPOWER, ATTACK_SPEED, FIRE_DMG, LIFE_REGEN, WRATH_PER_SEC, DEMONOLOGY_SKILLS,
-    HELLFIRE_SKILLS, BLAZING_SCREAM,
+    HELLFIRE_SKILLS, BLAZING_SCREAM, CC_DURATION_RED, CRIT_DAMAGE, POTION_CHARGES,
+    RESOURCE_GAIN, RESOURCE_COST_RED, CORE_SKILLS, DAMAGE_REDUCTION, RAMPAGE_RANKS,
 ]
 
 NAMES = {**GEAR_TYPE_NAMES,
@@ -114,7 +124,13 @@ NAMES = {**GEAR_TYPE_NAMES,
     WILLPOWER: "Willpower", ATTACK_SPEED: "Attack Speed", FIRE_DMG: "Fire Damage",
     LIFE_REGEN: "Life Regeneration", WRATH_PER_SEC: "Wrath per Second",
     DEMONOLOGY_SKILLS: "+ to Demonology Skills", HELLFIRE_SKILLS: "+ to Hellfire Skills",
-    BLAZING_SCREAM: "+ to Blazing Scream",
+    BLAZING_SCREAM: "+ to Blazing Scream", CC_DURATION_RED: "Crowd Control Duration Reduction",
+    CRIT_DAMAGE: "Critical Strike Damage", POTION_CHARGES: "Potion Capacity",
+    RESOURCE_GAIN: "Resource Generation", RESOURCE_COST_RED: "Resource Cost Reduction",
+    CORE_SKILLS: "+ to Core Skills", DAMAGE_REDUCTION: "Damage Reduction", RAMPAGE_RANKS: "+ to Rampage",
+    # Warlock endgame uniques (confirmed in the v14 export)
+    2548638: "Infernal Homunculus", 2549155: "The Eightfold Idol", 2549205: "Hand of Apotheosis",
+    2538578: "Wendigo Brand", 2592967: "Anathema of the Primes (charm)",
     # Warlock uniques (confirmed in the same export)
     2549226: "Moloch's Beating Flame", 1306326: "Temerity", 2549159: "Seed of Horazon",
     2549203: "Ae'grom's Schism", 2548622: "Anathema of the Primes", 2548635: "Litany of Sable",

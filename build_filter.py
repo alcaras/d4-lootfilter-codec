@@ -201,9 +201,16 @@ def slot_rules(label, keys, types, wanted, must):
 
 summary = []
 rules = []
-if settings.get("uniques"):
-    rules.append(rule(settings.get("uniques_rule", "Target Uniques"), UP,
-                      {"type": "unique", "ids": settings["uniques"]}))
+# The game keeps at most 10 IDs in a "unique" condition and silently drops
+# the rest, so long lists are split across several rules.
+UNIQUE_CAP = 10
+targets = settings.get("uniques", [])
+for n, i in enumerate(range(0, len(targets), UNIQUE_CAP)):
+    name = settings.get("uniques_rule", "Target Uniques") + (f" {n + 1}" if len(targets) > UNIQUE_CAP else "")
+    rules.append(rule(name, UP, {"type": "unique", "ids": targets[i:i + UNIQUE_CAP]}))
+for r in rules:
+    for c in r["conditions"]:
+        assert c["type"] != "unique" or len(c["ids"]) <= UNIQUE_CAP, (r["name"], "over 10 uniques")
 # Build-specific talisman and rune targets (settings "extra_rules"), shown magenta
 # like target uniques: [{"name": ..., "conditions": [...]}, ...]
 for x in settings.get("extra_rules", []):
