@@ -12,9 +12,9 @@ Each character has its own folder `chars/<key>/` (git-ignored, personal):
 | Key | Character | Class / build | Filter name |
 |---|---|---|---|
 | `alcara` | Alcara | Rogue, Dance of Knives (poison), Maxroll endgame guide, Midgame profile (from level 70) | DoK Upgrades vN |
-| `warlock` | (name TBD) | Warlock, Blazing Scream, Maxroll leveling planner `hidaul0h` (endgame planners `to4erl0e` 1H Elegy, `oohxnu0w` 2H) | BS Upgrades vN |
+| `warlock` | Alcara (Warlock) | Warlock, Blazing Scream, Maxroll leveling planner `hidaul0h` (endgame planners `to4erl0e` 1H Elegy, `oohxnu0w` 2H) | BS Upgrades vN |
 
-All characters' screenshots land in the same folder. The character name is shown in the character panel ("ALCARA"), so use it to tell which character a screenshot belongs to. If it's unclear, ask.
+All characters' screenshots land in the same folder. The character name is shown in the character panel, but **both characters are named "ALCARA"**: tell them apart by class and level (the Rogue is 70+ with Dance of Knives gear; the Warlock is the new one), and by the paper doll (Warlock gear and weapons). If it's unclear, ask.
 
 ## Hard rules
 - **The Diablo IV install is read-only.** Never write to game files, inject into the game, or touch the running game. Read the screenshots folder only.
