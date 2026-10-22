@@ -102,9 +102,10 @@ ARMOR_GROUPS = [
 CLASS_GROUPS = {
     "rogue": [("Ranged", ["ranged"], [CROSSBOW, BOW]),
               ("Melee", ["mainhand", "offhand"], [SWORD, DAGGER])],
-    # Warlock: one weapon slot (planner slot 7); the guides use one- and
-    # two-handed swords and a dagger. 446799 = Two-Handed Sword (ids.GEAR_TYPES).
-    "warlock": [("Weapon", ["weapon"], [SWORD, 446799, DAGGER])],
+    # Warlock: one weapon slot (planner slot 7). The guides use one- and
+    # two-handed swords and a dagger; flails also drop for it while leveling.
+    # 446799 = Two-Handed Sword, 2312856 = Flail (ids.GEAR_TYPES).
+    "warlock": [("Weapon", ["weapon"], [SWORD, 446799, DAGGER, 2312856])],
 }
 if settings["class"] not in CLASS_GROUPS:
     sys.exit(f"no weapon slot groups for class {settings['class']!r} yet: add them to CLASS_GROUPS")
