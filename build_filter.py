@@ -105,7 +105,7 @@ CLASS_GROUPS = {
     # Warlock: one weapon slot (planner slot 7). The guides use one- and
     # two-handed swords and a dagger; flails and axes also drop for it while leveling.
     # 446799 = Two-Handed Sword, 2312856 = Flail, 446801 = Axe (ids.GEAR_TYPES).
-    "warlock": [("Weapon", ["weapon"], [SWORD, 446799, DAGGER, 2312856, 446801])],
+    "warlock": [("Weapon", ["weapon"], [SWORD, DAGGER, 2312856, 446801])],
 }
 if settings["class"] not in CLASS_GROUPS:
     sys.exit(f"no weapon slot groups for class {settings['class']!r} yet: add them to CLASS_GROUPS")
